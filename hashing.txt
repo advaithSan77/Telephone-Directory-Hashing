@@ -1,0 +1,21 @@
+The general contract of hashCode() states:
+
+Whenever it is invoked on the same object more than once during an execution of a Java application, hashCode() must consistently return the same value, provided no information used in equals comparisons on the object is modified. This value doesn't need to stay consistent from one execution of an application to another execution of the same application.
+
+If two objects are equal according to the equals(Object) method, calling the hashCode() method on each of the two objects must produce the same value.
+
+Java's HashMap uses the separate chaining method for handling collisions:
+
+“When two or more objects point to the same bucket, they're simply stored in a linked list. In such a case, the hash table is an array of linked lists, and each object with the same hash is appended to the linked list at the bucket index in the array.
+
+In the worst case, several buckets would have a linked list bound to it, and the retrieval of an object in the list would be performed linearly.”
+
+For separate-chaining, the worst-case scenario is when all entries are inserted into the same bucket, in which case the hash table is ineffective and the cost is that of searching the bucket data structure. If the latter is a linear list, the lookup procedure may have to scan all its entries, so the worst-case cost is proportional to the number n of entries in the table.
+
+The bucket chains are often searched sequentially using the order the entries were added to the bucket. If the load factor is large and some keys are more likely to come up than others, then rearranging the chain with a move-to-front heuristic may be effective. 
+
+More sophisticated data structures, such as balanced search trees, are worth considering only if the load factor is large (about 10 or more), or if the hash distribution is likely to be very non-uniform, or if one must guarantee good performance even in a worst-case scenario. However, using a larger table and/or a better hash function may be even more effective in those cases
+
+Java 8 brought an interesting enhancement to HashMap implementation. If a bucket size goes beyond the certain threshold, a tree map replaces the linked list. This allows achieving O(logn) lookup instead of pessimistic O(n).
+
+DISADVANTAGE is that traversing a linked list has poor cache performance, making the processor cache ineffective.
